@@ -6,4 +6,8 @@ router.post('/registerDelegate', function(req, res, next) {
     res.json(true);
 });
 
+router.get('/getActiveDelegates', function(req, res, next) {
+    res.json(true);
+});
+
 module.exports = router;
