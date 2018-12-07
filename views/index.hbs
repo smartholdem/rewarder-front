@@ -1,7 +1,7 @@
 <h1>{{title}}</h1>
 
-<div class="row">
-    {{#if list}}
+{{#if list}}
+    <div class="row">
         <h4 class="text-center">List Delegates</h4>
         <table class="table table-striped">
             <thead class="thead-dark">
@@ -15,10 +15,17 @@
             </thead>
             <tbody>
             {{#each list}}
-                    <td>{{rank}}</td>
+                <td>{{rank}}</td>
                 </tr>
             {{/each}}
             </tbody>
         </table>
-    {{/if}}
-</div>
+    </div>
+{{/if}}
+
+{{#if details}}
+    <div class="article">
+        <h4 class="text-center">Delegate Detail Information</h4>
+
+    </div>
+{{/if}}
