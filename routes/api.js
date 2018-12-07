@@ -1,8 +1,12 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
+/* API */
 router.post('/registerDelegate', function(req, res, next) {
+    res.json(true);
+});
+
+router.post('/verifyDelegate', function(req, res, next) {
     res.json(true);
 });
 
