@@ -1,6 +1,13 @@
 var express = require('express');
 var router = express.Router();
 
+
+/* API Functions */
+
+function initApp() {
+
+}
+
 /* API */
 router.post('/registerDelegate', function(req, res, next) {
     res.json(true);
@@ -10,7 +17,7 @@ router.post('/verifyDelegate', function(req, res, next) {
     res.json(true);
 });
 
-router.get('/getActiveDelegates', function(req, res, next) {
+router.get('/getListDelegates', function(req, res, next) {
     res.json(true);
 });
 
