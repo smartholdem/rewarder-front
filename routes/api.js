@@ -18,4 +18,8 @@ router.get('/detailDelegateInfo', function(req, res, next) {
     res.json(true);
 });
 
+router.get('/getDelegateStats', function(req, res, next) {
+    res.json(true);
+});
+
 module.exports = router;
