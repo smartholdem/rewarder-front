@@ -10,4 +10,8 @@ router.get('/getActiveDelegates', function(req, res, next) {
     res.json(true);
 });
 
+router.get('/detailDelegateInfo', function(req, res, next) {
+    res.json(true);
+});
+
 module.exports = router;
