@@ -1,2 +1,2 @@
-# rewarder-front
-delegates summary information
+# Rewarder Delegates summary information tool
+
