@@ -70,6 +70,26 @@ router.get('/delegates', function (req, res, next) {
         });
 });
 
+router.get('/delegates/unverified', function (req, res, next) {
+    let list = [];
+    db.createReadStream({gte: '1x', lt: '2x', "limit": 1000})
+        .on('data', function (data) {
+            if (!data.value.verified) {
+                list.push(data.value);
+            }
+        })
+        .on('error', function (err) {
+            console.log('Oh my!', err)
+        })
+        .on('close', function () {
+            // console.log('Stream closed')
+        })
+        .on('end', function () {
+            // console.log('Stream ended');
+            res.json(list);
+        });
+});
+
 router.get('/delegate/detail', function (req, res, next) {
     res.json(true);
 });
