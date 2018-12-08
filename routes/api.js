@@ -4,6 +4,7 @@ const jsonReader = require('jsonfile');
 const level = require("level");
 const request = require("request");
 const db = level('.db', {valueEncoding: 'json'});
+const xConfig = jsonReader.readFileSync('./config.json');
 const cryptoRandomString = require('crypto-random-string');
 
 // 0x - reserved
@@ -11,15 +12,49 @@ const cryptoRandomString = require('crypto-random-string');
 // 2x - delegate stat
 // 3x - bad delegates
 // 4x - service stats
+// 5x - all delegates
+
+appInit();
 
 /* API Functions */
-function initApp() {
+function delegateCount() {
+    return new Promise((resolve, reject) => {
+        request({
+            method: 'get',
+            json: true,
+            url: 'http://' + xConfig.node + ':6100/api/delegates/count',
+            headers: {
+                "Content-Type": "application/json",
+            }
+        }, function (err, res, result) {
+            if (!err) {
+                resolve(result.count);
+            }
+            reject(err);
+        });
+    });
+}
 
+function appInit() {
+    delegateCount().then(function (dCount) {
+        db.put('0xdelegates',{
+            "count": dCount
+        });
+    });
 }
 
 // db.del('1xgendelegate_2');
 
 /* API */
+
+router.get('/delegates/count', function (req, res, next) {
+    db.get('0xdelegates', function (err, value) {
+        if (!err) {
+            res.json(value);
+        }
+    });
+});
+
 router.post('/init', function (req, res, next) {
     let delegateOptions = req.body;
     console.log(delegateOptions);
@@ -55,8 +90,16 @@ router.get('/delegates', function (req, res, next) {
     let list = [];
     db.createReadStream({gte: '1x', lt: '2x', "limit": 1000})
         .on('data', function (data) {
-            list.push(data.value);
-            // list[data.key] = data.value;
+            if (data.value.verified) {
+                list.push({
+                    "delegate": data.value.delegate,
+                    "paymentPeriod": data.value.paymentPeriod,
+                    "paymentPercent": data.value.paymentPercent,
+                    "minVoteWeight": data.value.minVoteWeight,
+                    "timereg": data.value.timereg,
+                    "verified": data.value.verified,
+                });
+            }
         })
         .on('error', function (err) {
             console.log('Oh my!', err)
@@ -75,7 +118,14 @@ router.get('/delegates/unverified', function (req, res, next) {
     db.createReadStream({gte: '1x', lt: '2x', "limit": 1000})
         .on('data', function (data) {
             if (!data.value.verified) {
-                list.push(data.value);
+                list.push({
+                    "delegate":data.value.delegate,
+                    "paymentPeriod":data.value.paymentPeriod,
+                    "paymentPercent":data.value.paymentPercent,
+                    "minVoteWeight":data.value.minVoteWeight,
+                    "timereg":data.value.timereg,
+                    "verified":data.value.verified,
+                });
             }
         })
         .on('error', function (err) {
